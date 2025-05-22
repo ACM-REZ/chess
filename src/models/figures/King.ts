@@ -13,6 +13,17 @@ export class King extends Figure {
 
   canMove(target: Cell): boolean {
     if (!super.canMove(target)) return false;
-    return true;
+
+    const dx = Math.abs(this.cell.x - target.x);
+    const dy = Math.abs(this.cell.y - target.y);
+
+    if (this.cell.isEmptyVertical(target) && (dx === 1 || dy === 1))
+      return true;
+    if (this.cell.isEmptyHorizontal(target) && (dx === 1 || dy === 1))
+      return true;
+    if (this.cell.isEmptyDiagonal(target) && (dx === 1 || dy === 1))
+      return true;
+
+    return false;
   }
 }

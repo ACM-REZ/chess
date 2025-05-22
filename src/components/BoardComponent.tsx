@@ -1,14 +1,22 @@
 import type { Board } from "../models/Board";
 import { CellComponents } from "./CellComponents";
-import { useEffect, useState, type FC } from "react";
+import { Fragment, useEffect, useState, type FC } from "react";
 import type { Cell } from "../models/Cell";
+import type { Player } from "../models/Player";
 
 interface BoardProps {
   board: Board;
   setBoard: (board: Board) => void;
+  currentPlayer: Player | null;
+  swapPlayer: () => void;
 }
 
-export const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
+export const BoardComponent: FC<BoardProps> = ({
+  board,
+  setBoard,
+  currentPlayer,
+  swapPlayer,
+}) => {
   const [selectedCell, setSelectedCell] = useState<Cell | null>(null);
 
   function click(cell: Cell) {
@@ -17,7 +25,9 @@ export const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
       selectedCell !== cell &&
       selectedCell.figure?.canMove(cell)
     ) {
+      console.log(selectedCell);
       selectedCell.moveFigure(cell);
+      swapPlayer();
       setSelectedCell(null);
       updateBoard();
     } else {
@@ -40,21 +50,24 @@ export const BoardComponent: FC<BoardProps> = ({ board, setBoard }) => {
   }, [selectedCell]);
 
   return (
-    <div className="board">
-      {board.cells.map((row, index) => (
-        <div key={index} className="row">
-          {row.map((cell) => (
-            <CellComponents
-              key={cell.id}
-              cell={cell}
-              selected={
-                cell.x === selectedCell?.x && cell.y === selectedCell?.y
-              }
-              onClick={click}
-            />
-          ))}
-        </div>
-      ))}
-    </div>
+    <>
+      <h3>Текущий игрок {currentPlayer?.color}</h3>
+      <div className="board">
+        {board.cells.map((row, index) => (
+          <Fragment key={index}>
+            {row.map((cell) => (
+              <CellComponents
+                onClick={click}
+                cell={cell}
+                key={cell.id}
+                selected={
+                  cell.x === selectedCell?.x && cell.y === selectedCell?.y
+                }
+              />
+            ))}
+          </Fragment>
+        ))}
+      </div>
+    </>
   );
 };
