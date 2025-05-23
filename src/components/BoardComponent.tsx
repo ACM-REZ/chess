@@ -25,13 +25,14 @@ export const BoardComponent: FC<BoardProps> = ({
       selectedCell !== cell &&
       selectedCell.figure?.canMove(cell)
     ) {
-      console.log(selectedCell);
       selectedCell.moveFigure(cell);
       swapPlayer();
       setSelectedCell(null);
       updateBoard();
     } else {
-      setSelectedCell(cell);
+      if (cell.figure?.color === currentPlayer?.color) {
+        setSelectedCell(cell);
+      }
     }
   }
 
